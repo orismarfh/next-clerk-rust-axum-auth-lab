@@ -4,7 +4,7 @@ use async_trait::async_trait;
 use axum::{
     body::Body,
     extract::{FromRequestParts, State},
-    http::{header::AUTHORIZATION, request::Parts, Request},
+    http::{header::AUTHORIZATION, request::Parts, HeaderMap, Request},
     middleware::Next,
     response::Response,
 };
@@ -213,19 +213,22 @@ pub struct AppState {
     pub cfg: Arc<AuthConfig>,
 }
 
+pub fn extract_bearer_token(headers: &HeaderMap) -> Result<String, AppError> {
+    headers
+        .get(AUTHORIZATION)
+        .and_then(|v| v.to_str().ok())
+        .and_then(|h| h.strip_prefix("Bearer ").or_else(|| h.strip_prefix("bearer ")))
+        .map(|t| t.trim().to_string())
+        .filter(|t| !t.is_empty())
+        .ok_or_else(|| AppError::Unauthorized("missing Bearer token".into()))
+}
+
 pub async fn require_auth(
     State(state): State<AppState>,
     mut req: Request<Body>,
     next: Next,
 ) -> Result<Response, AppError> {
-    let token = req
-        .headers()
-        .get(AUTHORIZATION)
-        .and_then(|v| v.to_str().ok())
-        .and_then(|h| h.strip_prefix("Bearer ").or_else(|| h.strip_prefix("bearer ")))
-        .map(|t| t.trim().to_string())
-        .ok_or_else(|| AppError::Unauthorized("missing Bearer token".into()))?;
-
+    let token = extract_bearer_token(req.headers())?;
     let claims = verify_token(&token, &state.jwks, &state.cfg).await?;
     req.extensions_mut().insert(claims);
     Ok(next.run(req).await)
@@ -244,5 +247,56 @@ where
             .get::<Claims>()
             .cloned()
             .ok_or_else(|| AppError::Unauthorized("claims not present in request".into()))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum::http::HeaderValue;
+
+    fn headers_with(value: &str) -> HeaderMap {
+        let mut h = HeaderMap::new();
+        h.insert(AUTHORIZATION, HeaderValue::from_str(value).unwrap());
+        h
+    }
+
+    #[test]
+    fn extracts_with_capital_bearer_prefix() {
+        let h = headers_with("Bearer abc.def.ghi");
+        assert_eq!(extract_bearer_token(&h).unwrap(), "abc.def.ghi");
+    }
+
+    #[test]
+    fn extracts_with_lowercase_bearer_prefix() {
+        let h = headers_with("bearer abc.def.ghi");
+        assert_eq!(extract_bearer_token(&h).unwrap(), "abc.def.ghi");
+    }
+
+    #[test]
+    fn trims_surrounding_whitespace() {
+        let h = headers_with("Bearer    abc.def.ghi\t");
+        assert_eq!(extract_bearer_token(&h).unwrap(), "abc.def.ghi");
+    }
+
+    #[test]
+    fn rejects_missing_header() {
+        let h = HeaderMap::new();
+        let err = extract_bearer_token(&h).unwrap_err();
+        assert!(matches!(err, AppError::Unauthorized(_)));
+    }
+
+    #[test]
+    fn rejects_wrong_scheme() {
+        let h = headers_with("Basic dXNlcjpwYXNz");
+        let err = extract_bearer_token(&h).unwrap_err();
+        assert!(matches!(err, AppError::Unauthorized(_)));
+    }
+
+    #[test]
+    fn rejects_empty_token_after_prefix() {
+        let h = headers_with("Bearer    ");
+        let err = extract_bearer_token(&h).unwrap_err();
+        assert!(matches!(err, AppError::Unauthorized(_)));
     }
 }

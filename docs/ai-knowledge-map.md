@@ -13,6 +13,7 @@
 | Concern | File | What lives here |
 |---|---|---|
 | How auth works conceptually | [`docs/architecture.md`](./architecture.md) | Flow diagram + decisions + out-of-scope list |
+| Backend bearer token handling (drill-down) | [`docs/backend-bearer-token.md`](./backend-bearer-token.md) | Wire contract, status-code matrix, code map, smoke recipes, extension hooks |
 | Web sign-in routing | `web/proxy.ts` | `clerkMiddleware()` — Next.js 16 renamed `middleware.ts` → `proxy.ts`. `createRouteMatcher(["/protected(.*)"])` gates the route; matcher excludes `_next` and dotted assets. |
 | Web protected page | `web/app/protected/page.tsx` | Server component: calls `auth().getToken()` then `fetch(API_BASE_URL + "/me")` |
 | Web layout / provider | `web/app/layout.tsx` | `<ClerkProvider>` wrapper, header sign-in/out |

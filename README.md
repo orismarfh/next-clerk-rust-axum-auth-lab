@@ -108,4 +108,5 @@ curl -s -H "Authorization: Bearer $TOKEN" http://localhost:8080/me | jq
 ## 7. Where to read next
 
 - `docs/architecture.md` — JWT flow, JWKS caching, scope boundaries.
+- `docs/backend-bearer-token.md` — focused reference for how the Rust/Axum side accepts and verifies `Authorization: Bearer …`.
 - `docs/ai-knowledge-map.md` — entry points, key files, gotchas, extension hooks for future agents.
