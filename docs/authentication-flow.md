@@ -1,6 +1,6 @@
 # Authentication Flow
 
-End-to-end walkthrough of what actually happens when a user goes from anonymous to calling the Rust API with a verified Clerk JWT. Read this when you want to understand *what runs where, in what order, with which data*. For the higher-level architectural decisions see [`architecture.md`](./architecture.md); for the backend-only reference see [`backend-bearer-token.md`](./backend-bearer-token.md); for a file tour see [`ai-knowledge-map.md`](./ai-knowledge-map.md).
+End-to-end walkthrough of what actually happens when a user goes from anonymous to calling the Rust API with a verified Clerk JWT. Read this when you want to understand *what runs where, in what order, with which data*. For the higher-level architectural decisions see [`architecture.md`](./architecture.md); for the backend-only reference see [`backend-bearer-token.md`](./backend-bearer-token.md); for a file tour see [`ai-knowledge-map/`](./ai-knowledge-map/README.md).
 
 ## Actors
 
@@ -212,7 +212,7 @@ After verification, `Claims` (`api/src/auth.rs:50-65`) contains:
 | JWKS endpoint unreachable / non-2xx (typo in issuer URL is the common cause) | `JwksCache::refresh` | 500 | `{ "error": "internal_error", "message": "JWKS endpoint returned …" }` |
 | CORS preflight for an origin not in `CLERK_AUTHORIZED_PARTIES` | `CorsLayer` | 403 (browser blocks) | (no response body — surfaces as network/CORS error in devtools) |
 
-A misconfigured `CLERK_JWT_ISSUER` typically surfaces as a **500**, not a 401 — see the gotcha in `ai-knowledge-map.md`. Enable `RUST_LOG=debug` and check for `refreshing JWKS url=…` to see the exact URL the API is trying.
+A misconfigured `CLERK_JWT_ISSUER` typically surfaces as a **500**, not a 401 — see the gotcha in [`ai-knowledge-map/gotchas.md`](./ai-knowledge-map/gotchas.md). Enable `RUST_LOG=debug` and check for `refreshing JWKS url=…` to see the exact URL the API is trying.
 
 ## Session lifetime
 

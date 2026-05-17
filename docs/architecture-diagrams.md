@@ -7,7 +7,7 @@ Pair this with the prose docs:
 - [`architecture.md`](./architecture.md) — decisions and out-of-scope.
 - [`authentication-flow.md`](./authentication-flow.md) — narrative walkthrough with file/line references.
 - [`backend-bearer-token.md`](./backend-bearer-token.md) — backend-only reference.
-- [`ai-knowledge-map.md`](./ai-knowledge-map.md) — file tour and gotchas.
+- [`ai-knowledge-map/`](./ai-knowledge-map/README.md) — folder of topic-scoped notes (entry points, gotchas, extension recipes).
 
 ## 1. System context (component view)
 

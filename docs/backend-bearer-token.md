@@ -1,6 +1,6 @@
 # Bearer Token Handling — Rust / Axum backend
 
-Focused reference for how the `api/` service accepts and verifies a Clerk session JWT carried in `Authorization: Bearer …`. Pairs with `architecture.md` (end-to-end JWT flow) and `ai-knowledge-map.md` (where everything lives).
+Focused reference for how the `api/` service accepts and verifies a Clerk session JWT carried in `Authorization: Bearer …`. Pairs with `architecture.md` (end-to-end JWT flow) and [`ai-knowledge-map/`](./ai-knowledge-map/README.md) (where everything lives).
 
 ## Wire contract
 
