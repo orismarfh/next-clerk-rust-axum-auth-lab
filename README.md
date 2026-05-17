@@ -109,5 +109,6 @@ curl -s -H "Authorization: Bearer $TOKEN" http://localhost:8080/me | jq
 
 - `docs/authentication-flow.md` — end-to-end walkthrough of the auth flow from sign-in to verified `/me` response, with per-step file references and a failure-mode matrix.
 - `docs/architecture.md` — JWT flow, JWKS caching, scope boundaries.
+- `docs/architecture-diagrams.md` — Mermaid renderings of the same flows (system context, sequence, request-verification decision tree, JWKS cache state machine, failure-mode map).
 - `docs/backend-bearer-token.md` — focused reference for how the Rust/Axum side accepts and verifies `Authorization: Bearer …`.
 - `docs/ai-knowledge-map.md` — entry points, key files, gotchas, extension hooks for future agents.

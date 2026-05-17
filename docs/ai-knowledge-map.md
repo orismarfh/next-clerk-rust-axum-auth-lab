@@ -14,6 +14,7 @@
 |---|---|---|
 | End-to-end auth flow (read this first) | [`docs/authentication-flow.md`](./authentication-flow.md) | Sequence diagram, step-by-step from sign-in to verified `/me` response, token shape, failure-mode matrix, session-lifetime table |
 | How auth works conceptually | [`docs/architecture.md`](./architecture.md) | Flow diagram + decisions + out-of-scope list |
+| Visual architecture (Mermaid) | [`docs/architecture-diagrams.md`](./architecture-diagrams.md) | System context, sequence, `require_auth` decision tree, JWKS cache state machine, config topology, failure-mode map |
 | Backend bearer token handling (drill-down) | [`docs/backend-bearer-token.md`](./backend-bearer-token.md) | Wire contract, status-code matrix, code map, smoke recipes, extension hooks |
 | Web sign-in routing | `web/proxy.ts` | `clerkMiddleware()` — Next.js 16 renamed `middleware.ts` → `proxy.ts`. `createRouteMatcher(["/protected(.*)"])` gates the route; matcher excludes `_next` and dotted assets. |
 | Web protected page | `web/app/protected/page.tsx` | Server component: calls `auth().getToken()` then `fetch(API_BASE_URL + "/me")` |
@@ -64,3 +65,4 @@
 - [ZIZ-64](/ZIZ/issues/ZIZ-64) — parent (Inbox Board)
 - [ZIZ-70](/ZIZ/issues/ZIZ-70) — backend bearer-token reference (`backend-bearer-token.md`)
 - [ZIZ-71](/ZIZ/issues/ZIZ-71) — end-to-end auth-flow doc (`authentication-flow.md`)
+- [ZIZ-72](/ZIZ/issues/ZIZ-72) — Mermaid architecture diagrams (`architecture-diagrams.md`)
